@@ -55,6 +55,33 @@ export async function deleteTask(id) {
     throw err;
   }
 }
+export async function update(id, newDescription) {
+  try {
+    const tasks = await readTask();
+    let modified;
+    let oldOne;
+    const updated = tasks.map((data, index) => {
+      if (data.id == id) {
+        oldOne = data.description;
+        modified = {
+          id: index,
+          description: newDescription,
+          status: data.status,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+        };
+
+        return modified;
+      } else {
+        return { data: data, oldOne: oldOne };
+      }
+    });
+    writeFile("./tasks.json", JSON.stringify(updated));
+    return modified;
+  } catch (err) {
+    throw err;
+  }
+}
 
 export async function markDone(id) {
   try {

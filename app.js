@@ -9,6 +9,7 @@ import {
   deleteTask,
   markDone,
   markInProgress,
+  update,
 } from "./funcs/task.js";
 import process from "process";
 const args = process.argv.slice(2);
@@ -24,6 +25,16 @@ async function main() {
         newTask = await addTask(descripton);
         console.log("------------------------------");
         console.log(`Added new task : ${newTask.description}`);
+        console.log("------------------------------");
+        break;
+      case "update":
+        const newDescription = args[2];
+        if (!newDescription) throw Error("No description provided");
+        const updated = await update(id, newDescription);
+        console.log("------------------------------");
+        console.log(
+          `Updating ${updated.oldOne} to ${updated.data.description}`
+        );
         console.log("------------------------------");
         break;
       case "delete":
