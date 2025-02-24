@@ -73,11 +73,11 @@ export async function update(id, newDescription) {
 
         return modified;
       } else {
-        return { data: data, oldOne: oldOne };
+        return data;
       }
     });
-    writeFile("./tasks.json", JSON.stringify(updated));
-    return modified;
+    await writeFile("./tasks.json", JSON.stringify(updated));
+    return { modified: modified, oldOne: oldOne };
   } catch (err) {
     throw err;
   }

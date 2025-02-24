@@ -33,7 +33,7 @@ async function main() {
         const updated = await update(id, newDescription);
         console.log("------------------------------");
         console.log(
-          `Updating ${updated.oldOne} to ${updated.data.description}`
+          `Updating ${updated.oldOne} to ${updated.modified.description}`
         );
         console.log("------------------------------");
         break;
