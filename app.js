@@ -1,77 +1,34 @@
-import { argv } from "process";
-
-import { Task } from "./funcs/task.js";
-import { Render } from "./funcs/render.js";
-
-const taskMethod = new Task();
-const render = new Render();
-
+import { readTask, addTask, deleteTask } from "./funcs/task.js";
+import process from "process";
+const args = process.argv.slice(2);
 async function main() {
-  const args = argv.slice(2);
-  const method = args[0];
-
-  switch (method) {
-    case "add":
-      try {
-        const taskDescription = args[1];
-        if (!taskDescription) {
-          return new Error("No description provided");
-        }
-        await taskMethod.add(taskDescription);
-        render.all("Added New Tasks!!");
+  try {
+    const method = args[0];
+    let newTask;
+    switch (method) {
+      case "add":
+        const descripton = args[1];
+        if (!descripton) throw Error("No descripton provided");
+        newTask = await addTask(descripton);
+        console.log("------------------------------");
+        console.log(`Added new task : ${newTask.description}`);
+        console.log("------------------------------");
         break;
-      } catch (err) {
-        console.log(err);
-        break;
-      }
-
-    case "mark":
-      try {
-        const taskId = args[2];
-        const status = args[1];
-        if (!taskId) return new Error("No id provided");
-        if (status === "in-progress") {
-          const task = await taskMethod.markInProgress(taskId);
-          render.all(`Marking ${task.description} status to ${task.status} `);
-        } else if (status === "done") {
-          const task = await taskMethod.markInDone(taskId);
-          render.all(`Marking ${task.description} status to ${task.status} `);
-          break;
-        } else {
-          return new Error("Invalid status");
-        }
-      } catch (err) {
-        console.log(err);
-        break;
-      }
-    case "list-all":
-      try {
-        render.all();
-        break;
-      } catch (err) {
-        console.log(err);
-        break;
-      }
-    case "list-filter":
-      try {
-        const filter = args[1];
-        render.filter(filter);
-        break;
-      } catch (err) {
-        console.log(err);
-        break;
-      }
-    case "delete":
-      try {
+      case "delete":
         const id = args[1];
-        await taskMethod.delete(id);
-        render.all(`Deleted task with id ${id}!!`);
-        break;
-      } catch (err) {
-        console.log(err);
-        break;
-      }
+        if (!id) throw Error("No id provided");
+        newTask = await deleteTask(id);
+        console.log("------------------------------");
+        console.log(`Deleted task : ${newTask.deleted.description}`);
+        console.log("------------------------------");
+    }
+  } catch (err) {
+    console.log(err);
   }
 }
 
-main();
+async function run() {
+  await main();
+}
+
+run();
