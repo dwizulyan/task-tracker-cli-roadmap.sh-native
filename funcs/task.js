@@ -17,7 +17,7 @@ export async function addTask(description) {
       id: tasks.length,
       description: description,
       status: "todo",
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toLocaleString(),
       updatedAt: "n/a",
     };
     tasks.push(newTasks);
@@ -34,7 +34,6 @@ export async function deleteTask(id) {
     let deleted;
     const newTasks = tasks
       .filter((data, index) => {
-        console.log(index);
         if (data.id != id) {
           return data;
         } else {
@@ -57,6 +56,52 @@ export async function deleteTask(id) {
   }
 }
 
-export async function markDone() {}
+export async function markDone(id) {
+  try {
+    const tasks = await readTask();
+    let modified;
+    const newTasks = tasks.map((data) => {
+      if (data.id == id) {
+        modified = {
+          id: data.id,
+          description: data.description,
+          status: "done",
+          createdAt: data.createdAt,
+          updatedAt: new Date().toLocaleString(),
+        };
+        return modified;
+      } else {
+        return data;
+      }
+    });
+    await writeFile("./tasks.json", JSON.stringify(newTasks));
+    return modified;
+  } catch (err) {
+    throw err;
+  }
+}
 
-export async function markInProgress() {}
+export async function markInProgress(id) {
+  try {
+    const tasks = await readTask();
+    let modified;
+    const newTasks = tasks.map((data) => {
+      if (data.id == id) {
+        modified = {
+          id: data.id,
+          description: data.description,
+          status: "in-progress",
+          createdAt: data.createdAt,
+          updatedAt: new Date().toLocaleString(),
+        };
+        return modified;
+      } else {
+        return data;
+      }
+    });
+    await writeFile("./tasks.json", JSON.stringify(newTasks));
+    return modified;
+  } catch (err) {
+    throw err;
+  }
+}
